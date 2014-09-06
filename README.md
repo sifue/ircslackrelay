@@ -68,7 +68,7 @@ relays = [
   }
 ]
 ```
-[slack.irc config](https://slack.zendesk.com/hc/en-us/articles/201727913-Connecting-to-Slack-over-IRC-and-XMPP) and [slack api token](https://api.slack.com/) provided slack website.
+[slack.irc config](https://slack.zendesk.com/hc/en-us/articles/201727913-Connecting-to-Slack-over-IRC-and-XMPP) and [slack api token](https://api.slack.com/) provided at slack website.
 
 
 ## Start server
