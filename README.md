@@ -1,14 +1,16 @@
-# What is this
+# What's this
 Two way relay server application between IRC and Slack.
 Zero size space put after username's first char for ignore notification.
 
-## IRC message/notice to Slack Message:
+## IRC message/notice to Slack Message
+ex.
 ```
 23:55 ircslackrelay: u​sername: message
 23:55 ircslackrelay: _u​sername: notice is sanded by undersocre_
 ```
 
-## Slack message to IRC notice:
+## Slack message to IRC notice
+ex.
 ```
 23:55 ircslackrelay: u​sername: message
 ```
@@ -31,7 +33,7 @@ target/scala-2.11/ircslackrelay-assembly-X.X.X.jar
 ```
 
 ## Create config file
-put `ircslackrelay.conf` file on same folder `ircslackrelay-assembly-X.X.X.jar`
+put `ircslackrelay.conf` file on the same folder of `ircslackrelay-assembly-X.X.X.jar`
 
 ```
 irc.address="irchostname.com"
