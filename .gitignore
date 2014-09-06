@@ -1,4 +1,5 @@
 ircslackrelay.conf
+.gitignore.un~
 .DS_Store
 .idea/
 .idea_modules/
