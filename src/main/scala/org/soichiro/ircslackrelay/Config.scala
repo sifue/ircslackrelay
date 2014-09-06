@@ -1,6 +1,7 @@
 package org.soichiro.ircslackrelay
 
 
+import java.io.File
 import java.util
 
 import com.typesafe.config.ConfigFactory
@@ -11,7 +12,7 @@ import scala.collection.mutable
  * Configuration singleton
  */
 object Config {
-  private val internalConf = ConfigFactory.load("ircslackrelay")
+  private val internalConf = ConfigFactory.parseFile(new File("./ircslackrelay.conf"))
   def irc = Irc
   object Irc extends IrcClientConfig {
       protected val ircConf: com.typesafe.config.Config = internalConf.getConfig("irc")
