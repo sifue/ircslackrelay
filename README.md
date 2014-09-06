@@ -2,13 +2,13 @@
 Two way relay server application between IRC and Slack.
 Zero size space put after username's first char for ignore notification.
 
-## IRC message to Slack Message:
+## IRC message/notice to Slack Message:
 ```
 23:55 ircslackrelay: u​sername: message
 23:55 ircslackrelay: _u​sername: notice is sanded by undersocre_
 ```
 
-## Slack message to IRC message:
+## Slack message to IRC notice:
 ```
 23:55 ircslackrelay: u​sername: message
 ```

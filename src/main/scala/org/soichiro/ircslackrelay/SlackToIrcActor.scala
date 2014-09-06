@@ -27,7 +27,8 @@ class SlackToIrcActor extends Actor with ActorLogging {
       log.info("SlackToIrcActor Started.")
     case m: IrcMessage =>
       log.info(s"Messaged: ${m}")
-      ircClient.sendMessage(createPostMessage(m), getIrcChannel(m.target), log)
+      // Default notice
+      ircClient.sendNotice(createPostMessage(m), getIrcChannel(m.target), log)
     case n: IrcNotice =>
       log.info(s"Noticed: ${n}")
       ircClient.sendNotice(createPostMessage(n), getIrcChannel(n.target), log)
