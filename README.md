@@ -77,5 +77,6 @@ java -jar -server ircslackrelay-assembly-X.X.X.jar
 ```
 If you want to demonize, please use screen or tmux or nohup command.
 
-
+# LICENSE
+MIT License
 
