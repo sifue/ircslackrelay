@@ -24,6 +24,6 @@ object StringModifier {
    * @return
    */
   def sandUnderscores(string: String): String = {
-    s"_${string}_"
+    s"_ ${string} _"
   }
 }
