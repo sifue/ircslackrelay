@@ -19,6 +19,19 @@ object StringModifier {
   }
 
   /**
+   * insert underscore to string
+   * @param string
+   * @return
+   */
+  def insertUnderScore(string: String):String = {
+    if (string.size > 1) {
+      string.head + "_" + string.tail
+    } else {
+      string
+    }
+  }
+
+  /**
    * Sand underscores
    * @param string
    * @return

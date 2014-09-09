@@ -5,8 +5,8 @@ Zero size space put after username's first char for ignore notification.
 ## IRC message/notice to Slack message
 ex.
 ```
-23:55 ircslackrelay: u​sername: message
-23:55 ircslackrelay: _ u​sername: notice is sanded by undersocre _
+23:55 ircslackrelay: :u_sername: message
+23:55 ircslackrelay: _ :u_sername: notice is sanded by undersocre _
 ```
 
 ## Slack message to IRC notice
