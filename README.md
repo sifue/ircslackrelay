@@ -8,6 +8,8 @@ ex.
 23:55 ircslackrelay: :u_sername: message
 23:55 ircslackrelay: _ :u_sername: notice is sanded by undersocre _
 ```
+If you configure :u_sername: as Emoji,  :u_sername: looks like a picture.
+And username is converted to lower case.
 
 ## Slack message to IRC notice
 ex.

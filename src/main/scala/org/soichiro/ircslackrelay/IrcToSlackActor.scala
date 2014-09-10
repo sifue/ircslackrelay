@@ -31,9 +31,9 @@ class IrcToSlackActor extends Actor with ActorLogging {
 
   private def createPostMessage(command: IrcCommand, isSandUnderscores: Boolean = false): String = {
     if(isSandUnderscores) {
-      sandUnderscores(s":${insertUnderScore(command.sender.getNick)}: ${command.message}")
+      sandUnderscores(s":${insertUnderScore(command.sender.getNick.toLowerCase)}: ${command.message}")
     } else {
-      s":${insertUnderScore(command.sender.getNick)}: ${command.message}"
+      s":${insertUnderScore(command.sender.getNick.toLowerCase)}: ${command.message}"
     }
   }
 
