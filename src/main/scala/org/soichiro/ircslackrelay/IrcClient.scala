@@ -19,6 +19,7 @@ class IrcClient(conf: IrcClientConfig,
                 callbackActorPath: String,
                 channels: Seq[String],
                 ignoreNicks: Seq[String] ) extends IrcAdaptor {
+  val lowerCaseChannels = channels.map(_.toLowerCase)
   val irc = new IrcConnection(conf.address, conf.port, conf.password)
   irc.setCharset(Charset.forName(conf.charset))
   irc.setNick(conf.nickname)
@@ -36,13 +37,13 @@ class IrcClient(conf: IrcClientConfig,
   }
 
   override def onMessage(irc: IrcConnection, sender: User, target: Channel, message: String) = {
-    if(channels.contains(target.getName) && !ignoreNicks.contains(sender.getNick)) {
+    if(lowerCaseChannels.contains(target.getName.toLowerCase) && !ignoreNicks.contains(sender.getNick)) {
       ActorSystemProvider.system.actorSelection(callbackActorPath) ! IrcMessage(irc, sender, target, message)
     }
   }
 
   override def onNotice(irc: IrcConnection, sender: User, target: Channel, message: String) = {
-    if(channels.contains(target.getName) && !ignoreNicks.contains(sender.getNick)) {
+    if(lowerCaseChannels.contains(target.getName.toLowerCase) && !ignoreNicks.contains(sender.getNick)) {
       ActorSystemProvider.system.actorSelection(callbackActorPath) ! IrcNotice(irc, sender, target, message)
     }
   }
