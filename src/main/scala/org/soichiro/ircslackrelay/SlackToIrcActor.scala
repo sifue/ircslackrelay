@@ -41,6 +41,6 @@ class SlackToIrcActor extends Actor with ActorLogging {
   }
 
   private def getIrcChannel(slackChannel: Channel): String = {
-    Config.relays.relayMapSlackToIrc(slackChannel.getName)
+    Config.relays.relayMapSlackToIrc(slackChannel.getName.toLowerCase)
   }
 }

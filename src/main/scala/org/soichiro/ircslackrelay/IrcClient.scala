@@ -53,7 +53,7 @@ class IrcClient(conf: IrcClientConfig,
   }
 
   override def onKick(irc: IrcConnection, channel: Channel, sender: User, user: User, message: String) = {
-    irc.createChannel(channel.getName).join()
+    irc.createChannel(channel.getName.toLowerCase).join()
   }
 
   val GroupedCharCount = 400
