@@ -1,5 +1,7 @@
 package org.soichiro.ircslackrelay
 
+import java.util.Date
+
 import akka.event.LoggingAdapter
 import com.sorcix.sirc.User
 
@@ -50,6 +52,19 @@ class IrcClient(conf: IrcClientConfig,
 
   override def onConnect(irc: IrcConnection) = {
     channels.foreach{irc.createChannel(_).join()}
+  }
+
+  val reconnectWaitMilliSec = 3000
+  override def onDisconnect(irc: IrcConnection) = {
+    connect
+    System.err.println(
+      s"Unexpected disconnection and reconnection. (${conf.address}:${conf.port.toString}) at ${new Date().toString}")
+    while (!irc.isConnected) {
+      Thread.sleep(reconnectWaitMilliSec)
+      connect
+      System.err.println(
+        s"Unexpected disconnection and retry reconnection. (${conf.address}:${conf.port.toString}) at ${new Date().toString}")
+    }
   }
 
   override def onKick(irc: IrcConnection, channel: Channel, sender: User, user: User, message: String) = {
