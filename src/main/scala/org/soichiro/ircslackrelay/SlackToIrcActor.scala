@@ -28,10 +28,10 @@ class SlackToIrcActor extends Actor with ActorLogging {
     case m: IrcMessage =>
       log.info(s"Messaged: ${m}")
       // Default notice
-      ircClient.sendNotice(createPostMessage(m), getIrcChannel(m.target), log)
+      ircClient.sendMessage(createPostMessage(m), getIrcChannel(m.target), log)
     case n: IrcNotice =>
       log.info(s"Noticed: ${n}")
-      ircClient.sendNotice(createPostMessage(n), getIrcChannel(n.target), log)
+      ircClient.sendMessage(createPostMessage(n), getIrcChannel(n.target), log)
     case _ =>
       log.error("Not supported command.")
   }

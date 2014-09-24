@@ -11,7 +11,7 @@ ex.
 If you configure :u_sername: as Emoji,  :u_sername: looks like a picture.
 And username is converted to lower case.
 
-## Slack message to IRC notice
+## Slack message to IRC message
 ex.
 ```
 23:55 ircslackrelay: u​sername: message
