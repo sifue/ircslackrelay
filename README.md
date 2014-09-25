@@ -14,7 +14,7 @@ And username is converted to lower case.
 ## Slack message to IRC message
 ex.
 ```
-23:55 ircslackrelay: u​sername: message
+23:55 ircslackrelay: (u​sername) message
 ```
 
 # How to use
