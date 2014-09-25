@@ -37,7 +37,7 @@ class SlackToIrcActor extends Actor with ActorLogging {
   }
 
   private def createPostMessage(command: IrcCommand): String = {
-    s"${insertSpace(command.sender.getNick)}: ${command.message}"
+    s"(${insertSpace(command.sender.getNick)}) ${command.message}"
   }
 
   private def getIrcChannel(slackChannel: Channel): String = {
