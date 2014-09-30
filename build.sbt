@@ -4,7 +4,7 @@ assemblySettings
 
 name := "ircslackrelay"
 
-version := "1.1.1"
+version := "1.1.7"
 
 scalaVersion := "2.11.2"
 
