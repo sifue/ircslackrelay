@@ -28,9 +28,9 @@ class IrcClient(conf: IrcClientConfig,
   private def initConnection: Unit = {
     this.irc = new IrcConnection(conf.address, conf.port, conf.password)
     this.irc.setCharset(Charset.forName(conf.charset))
+    this.irc.setUsername(conf.username, conf.username)
     this.irc.setNick(conf.nickname)
     this.irc.setUsingSSL(conf.useSsl)
-    this.irc.setUsername(conf.username)
     this.irc.addServerListener(this)
     this.irc.addMessageListener(this)
   }
