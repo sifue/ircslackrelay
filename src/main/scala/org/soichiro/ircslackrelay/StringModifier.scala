@@ -12,7 +12,7 @@ object StringModifier {
    */
   def insertSpace(string: String):String = {
     if (string.size > 1) {
-      string.head + "\u200B" + string.tail
+      string.head + "\u200B" + insertSpace(string.tail)
     } else {
       string
     }
