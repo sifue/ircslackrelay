@@ -28,9 +28,9 @@ class IrcClient(conf: IrcClientConfig,
   private def initConnection: Unit = {
     this.irc = new IrcConnection(conf.address, conf.port, conf.password)
     this.irc.setCharset(Charset.forName(conf.charset))
+    this.irc.setUsingSSL(conf.useSsl)
     this.irc.setUsername(conf.username, conf.username)
     this.irc.setNick(conf.nickname)
-    this.irc.setUsingSSL(conf.useSsl)
     this.irc.addServerListener(this)
     this.irc.addMessageListener(this)
   }
@@ -38,7 +38,7 @@ class IrcClient(conf: IrcClientConfig,
   def connect: Unit = {
     initConnection
     if(conf.useSsl) {
-      irc.connect(IgnoreSSLContextProvider.getIgnoreSSLContext)
+      irc.connect(IgnoreTLSContextProvider.getIgnoreSSLContext)
     } else {
       irc.connect()
     }
@@ -62,22 +62,25 @@ class IrcClient(conf: IrcClientConfig,
 
   val reconnectWaitMilliSec = 3000
   override def onDisconnect(irc: IrcConnection) = {
+    System.err.println(
+      s"Unexpected disconnection and wait and try reconnection. (${conf.address}:${conf.port.toString}) at ${new Date().toString}")
     try {
+      Thread.sleep(reconnectWaitMilliSec)
       connect
     } catch {
       case e: Throwable => e.printStackTrace()
     }
-    System.err.println(
-      s"Unexpected disconnection and reconnection. (${conf.address}:${conf.port.toString}) at ${new Date().toString}")
     while (!this.irc.isConnected) {
-      Thread.sleep(reconnectWaitMilliSec)
+      System.err.println(
+        s"Unexpected disconnection and wait and retry reconnection. (${conf.address}:${conf.port.toString}) at ${new Date().toString}")
       try {
-        connect
+        Thread.sleep(reconnectWaitMilliSec)
+        if(!this.irc.isConnected) {
+          connect
+        }
       } catch {
         case e: Throwable => e.printStackTrace()
       }
-      System.err.println(
-        s"Unexpected disconnection and retry reconnection. (${conf.address}:${conf.port.toString}) at ${new Date().toString}")
     }
   }
 

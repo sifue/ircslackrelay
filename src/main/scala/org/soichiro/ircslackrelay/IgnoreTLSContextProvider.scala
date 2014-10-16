@@ -10,9 +10,9 @@ import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 
 /**
- * Provide IgnoreSSLContext
+ * Provide IgnoreTLSContext
  */
-object IgnoreSSLContextProvider {
+object IgnoreTLSContextProvider {
 
   def getIgnoreSSLContext: SSLContext = {
     val tm: Array[TrustManager]  = Array (new X509TrustManager(){
@@ -20,7 +20,7 @@ object IgnoreSSLContextProvider {
       override def getAcceptedIssuers: Array[X509Certificate] = null
       override def checkServerTrusted(p1: Array[X509Certificate], p2: String): Unit = Unit
     })
-    val sslContext = SSLContext.getInstance("SSL");
+    val sslContext = SSLContext.getInstance("TLSv1.2");
     sslContext.init(null, tm, null);
     HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier {
       override def verify(p1: String, p2: SSLSession): Boolean = true

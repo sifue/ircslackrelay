@@ -4,7 +4,7 @@ assemblySettings
 
 name := "ircslackrelay"
 
-version := "1.1.8"
+version := "1.2.3"
 
 scalaVersion := "2.11.2"
 
@@ -20,3 +20,14 @@ libraryDependencies ++= List(
 )
 
 mainClass in assembly := Some("org.soichiro.ircslackrelay.Main")
+
+mergeStrategy in assembly <<= (mergeStrategy in assembly) { (old) =>
+{
+  case PathList("com", "sorcix", "sirc", xs @ _*)  => MergeStrategy.first
+  case x => old(x)
+}
+}
+
+javacOptions ++= Seq("-source", "1.7", "-target", "1.7")
+
+scalacOptions += "-target:jvm-1.7"

@@ -14,11 +14,11 @@ And username is converted to lower case.
 ## Slack message to IRC message
 ex.
 ```
-23:55 ircslackrelay: (u​sername) message
+23:55 ircslackrelay: (u​s​e​r​n​a​m​e) message
 ```
 
 # How to use
-## Install Java (upper 6)
+## Install Java (upper 7)
 Download from [Oracle](http://www.oracle.com/technetwork/java/javase/downloads/index-jsp-138363.html).
 After install, please check by type `java -version` on your console.
 
