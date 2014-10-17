@@ -70,7 +70,7 @@ relays = [
   }
 ]
 ```
-[slack.irc config](https://dwango.slack.com/account/gateways) and [slack api token](https://api.slack.com/) provided at slack website.
+[slack.irc config](https://my.slack.com/account/gateways) and [slack api token](https://api.slack.com/) provided at slack website.
 
 
 ## Start server
