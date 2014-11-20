@@ -79,6 +79,17 @@ java -jar -server ircslackrelay-assembly-X.X.X.jar
 ```
 If you want to demonize, please use screen or tmux or nohup command.
 
+## Start on heroku
+
+```
+heroku create # git remote add heroku dokku@dokku.me:myrelay 
+cp ircslackrelay_template.conf ircslackrelay.conf
+vi ircslackrelay.conf
+git add -f ircslackrelay.conf
+git commit -m "ircslackrelay.conf"
+git push heroku master
+```
+
 # LICENSE
 MIT License
 

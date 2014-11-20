@@ -1,6 +1,9 @@
 import AssemblyKeys._
+import NativePackagerKeys._
 
 assemblySettings
+
+packageArchetype.java_application
 
 name := "ircslackrelay"
 
