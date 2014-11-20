@@ -91,5 +91,5 @@ git push heroku master
 ```
 
 # LICENSE
-MIT License
+The MIT License
 
