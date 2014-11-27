@@ -90,6 +90,29 @@ git commit -m "ircslackrelay.conf"
 git push heroku master
 ```
 
+## System command
+### No name command
+you puts
+```
+noname> hogehoge
+```
+
+relay server posts
+```
+hogehoge
+```
+
+### Ping command
+you puts
+```
+ircslackrelayping>
+```
+
+relay server posts
+```
+pong, booted by boot_user_name
+```
+
 # LICENSE
 The MIT License
 

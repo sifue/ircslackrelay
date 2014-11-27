@@ -13,7 +13,6 @@ case class StartIrcToSlackActor()
  * Actor of relay IRC to Slack
  */
 class IrcToSlackActor extends Actor with ActorLogging {
-  lazy val slackClient = new SlackClient
 
   override def receive: Receive = {
     case StartIrcToSlackActor =>
@@ -21,17 +20,29 @@ class IrcToSlackActor extends Actor with ActorLogging {
       log.info("IrcToSlackActor Started.")
     case m: IrcMessage =>
       log.info(s"Messaged: ${m}")
-      slackClient.postMessage(createPostMessage(m), getSlackChannel(m.target), log)
+      SlackClient.postMessage(createPostMessage(m), getSlackChannel(m.target), log)
     case n: IrcNotice =>
       log.info(s"Noticed: ${n}")
-      slackClient.postMessage(createPostMessage(n, true), getSlackChannel(n.target), log)
+      SlackClient.postMessage(createPostMessage(n, true), getSlackChannel(n.target), log)
     case _ =>
       log.error("Not supported command.")
   }
 
   private def createPostMessage(command: IrcCommand, isSandUnderscores: Boolean = false): String = {
     if(isSandUnderscores) {
-      sandUnderscores(s":${insertUnderScore(command.sender.getNick.toLowerCase)}: ${command.message}")
+      sandUnderscores(formatMassage(command))
+    } else {
+      formatMassage(command)
+    }
+  }
+
+  private def formatMassage(command: IrcCommand): String = {
+    if(command.message.startsWith(NoNameCommand.commandPrefix)) {
+      command.message.replace(NoNameCommand.commandPrefix, "")
+    } else if (command.message.startsWith(PingCommand.commandPrefix)) {
+      val pongMessage = s"pong, booted by ${System.getProperty("user.name")}"
+      IrcClientProvider.ircClient.sendMessage(pongMessage, command.target.getName, log)
+      pongMessage
     } else {
       s":${insertUnderScore(command.sender.getNick.toLowerCase)}: ${command.message}"
     }

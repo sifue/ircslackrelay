@@ -38,14 +38,22 @@ class SlackToIrcActor extends Actor with ActorLogging {
   private def sendToIrc(c: IrcCommand): Unit = {
     if(isItalic(c.message)) {
       val message = getItalicString(c.message)
-      ircClient.sendNotice(createPostMessage(c.sender.getNick, message), getIrcChannel(c.target), log)
+      ircClient.sendNotice(createPostMessage(c.sender.getNick, message, c.target), getIrcChannel(c.target), log)
     } else {
-      ircClient.sendMessage(createPostMessage(c.sender.getNick, c.message), getIrcChannel(c.target), log)
+      ircClient.sendMessage(createPostMessage(c.sender.getNick, c.message, c.target), getIrcChannel(c.target), log)
     }
   }
 
-  private def createPostMessage(nick: String, message: String ): String = {
-    s"(${insertSpace(nick)}) ${message}"
+  private def createPostMessage(nick: String, message: String, channel: Channel): String = {
+    if(message.startsWith(NoNameCommand.commandPrefix)) {
+      message.replace(NoNameCommand.commandPrefix, "")
+    } else if (message.startsWith(PingCommand.commandPrefix)) {
+      val pongMessage = s"pong, booted by ${System.getProperty("user.name")}"
+      SlackClient.postMessage(pongMessage, channel.getName, log)
+      pongMessage
+    } else {
+      s"(${insertSpace(nick)}) ${message}"
+    }
   }
 
   private def getIrcChannel(slackChannel: Channel): String = {

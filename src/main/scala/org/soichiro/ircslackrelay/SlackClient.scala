@@ -46,7 +46,7 @@ class SlackClient {
   }
 }
 
-object SlackClient {
+object SlackClient extends SlackClient {
   val available = new Semaphore(1, true)
   val apiLimitWaitMilliSec = 1000L
 }
