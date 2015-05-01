@@ -1,6 +1,5 @@
 package org.soichiro.ircslackrelay
 
-import java.util.concurrent.Semaphore
 import akka.event.LoggingAdapter
 import dispatch._
 import dispatch.Defaults._
@@ -9,8 +8,7 @@ import dispatch.Defaults._
  * Client of Slack
  *
  */
-class SlackClient {
-  val conf = Config.slack.api
+trait SlackClient {
 
   /**
    * post message to Slack
@@ -19,9 +17,14 @@ class SlackClient {
    * @param channelName
    * @param log
    */
-  def postMessage(message:String, channelName:String, log: LoggingAdapter): Unit = {
+  def postMessage(message:String, channelName:String, log: LoggingAdapter): Unit
+}
+
+class SlackClientImpl extends SlackClient {
+  val conf = Config.slack.api
+
+  override def postMessage(message:String, channelName:String, log: LoggingAdapter): Unit = {
     try {
-      SlackClient.available.acquire();
       val request = url("https://slack.com/api/chat.postMessage")
       val requestWithParameters = request
         .POST
@@ -37,16 +40,8 @@ class SlackClient {
       } else {
         log.info(s"SlackClient post message. channel:${channelName} message:${message}")
       }
-      Thread.sleep(SlackClient.apiLimitWaitMilliSec)
     } catch {
       case e: Throwable => log.error(e, "SlackClient caught Throwable.")
-    } finally  {
-      SlackClient.available.release()
     }
   }
-}
-
-object SlackClient extends SlackClient {
-  val available = new Semaphore(1, true)
-  val apiLimitWaitMilliSec = 1000L
 }
