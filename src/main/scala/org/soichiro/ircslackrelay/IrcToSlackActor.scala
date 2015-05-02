@@ -1,8 +1,9 @@
 package org.soichiro.ircslackrelay
 
-import akka.actor.{Actor, ActorLogging}
-import StringModifier._
+import akka.actor.{Actor, ActorLogging, ActorRef, Props}
 import com.sorcix.sirc.Channel
+import org.soichiro.ircslackrelay.SlackClientActor.PostToSlack
+import org.soichiro.ircslackrelay.StringModifier._
 
 /**
  * command of start actor
@@ -12,7 +13,7 @@ case class StartIrcToSlackActor()
 /**
  * Actor of relay IRC to Slack
  */
-class IrcToSlackActor extends Actor with ActorLogging {
+class IrcToSlackActor(slackClientActor: ActorRef) extends Actor with ActorLogging {
 
   override def receive: Receive = {
     case StartIrcToSlackActor =>
@@ -20,10 +21,10 @@ class IrcToSlackActor extends Actor with ActorLogging {
       log.info("IrcToSlackActor Started.")
     case m: IrcMessage =>
       log.info(s"Messaged: ${m}")
-      SlackClient.postMessage(createPostMessage(m), getSlackChannel(m.target), log)
+      slackClientActor ! PostToSlack(createPostMessage(m), getSlackChannel(m.target))
     case n: IrcNotice =>
       log.info(s"Noticed: ${n}")
-      SlackClient.postMessage(createPostMessage(n, true), getSlackChannel(n.target), log)
+      slackClientActor ! PostToSlack(createPostMessage(n, true), getSlackChannel(n.target))
     case _ =>
       log.error("Not supported command.")
   }
@@ -51,4 +52,9 @@ class IrcToSlackActor extends Actor with ActorLogging {
   private def getSlackChannel(ircChannel: Channel): String = {
     Config.relays.relayMapIrcToSlack(ircChannel.getName.toLowerCase)
   }
+}
+
+object IrcToSlackActor {
+
+  def props(slackClientActor: ActorRef) = Props(new IrcToSlackActor(slackClientActor))
 }

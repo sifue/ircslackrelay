@@ -1,6 +1,5 @@
 package org.soichiro.ircslackrelay
 
-import akka.actor.Props
 import ActorSystemProvider._
 
 /**
@@ -8,10 +7,12 @@ import ActorSystemProvider._
  */
 object Main extends App {
 
-  val ircToSlackActor = system.actorOf(Props[IrcToSlackActor], name = "ircToSlackActor")
+  val slackClientActor = system.actorOf(SlackClientActor.props, "slackClientActor")
+
+  val ircToSlackActor = system.actorOf(IrcToSlackActor.props(slackClientActor), name = "ircToSlackActor")
   ircToSlackActor ! StartIrcToSlackActor
 
-  val slackToIrcActor = system.actorOf(Props[SlackToIrcActor], name = "slackToIrcActor")
+  val slackToIrcActor = system.actorOf(SlackToIrcActor.props(slackClientActor), name = "slackToIrcActor")
   slackToIrcActor ! StartSlackToIrcActor
 
 }

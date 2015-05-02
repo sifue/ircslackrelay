@@ -1,9 +1,10 @@
 package org.soichiro.ircslackrelay
 
-import akka.actor.{Actor, ActorLogging}
+import akka.actor.{Props, ActorRef, Actor, ActorLogging}
 import StringModifier._
 import IrcClientProvider._
 import com.sorcix.sirc.Channel
+import org.soichiro.ircslackrelay.SlackClientActor.PostToSlack
 
 /**
  * command of start actor
@@ -13,7 +14,7 @@ case class StartSlackToIrcActor()
 /**
  * Actor of relay Slack to Irc
  */
-class SlackToIrcActor extends Actor with ActorLogging {
+class SlackToIrcActor(slackClientActor: ActorRef) extends Actor with ActorLogging {
   lazy val slackIrcClient = new IrcClient(
     Config.slack.irc,
     "akka://Ircslackrelay/user/slackToIrcActor",
@@ -49,7 +50,7 @@ class SlackToIrcActor extends Actor with ActorLogging {
       message.replace(NoNameCommand.commandPrefix, "")
     } else if (message.startsWith(PingCommand.commandPrefix)) {
       val pongMessage = s"pong, booted by ${System.getProperty("user.name")}"
-      SlackClient.postMessage(pongMessage, channel.getName, log)
+      slackClientActor ! PostToSlack(pongMessage, channel.getName)
       pongMessage
     } else {
       s"(${insertSpace(nick)}) ${message}"
@@ -75,4 +76,9 @@ class SlackToIrcActor extends Actor with ActorLogging {
       case _ => s
     }
   }
+}
+
+object SlackToIrcActor {
+
+  def props(slackClientActor: ActorRef) = Props(new SlackToIrcActor(slackClientActor))
 }
