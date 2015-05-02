@@ -1,45 +1,49 @@
 package org.soichiro.ircslackrelay
 
-import akka.actor.{Actor, ActorLogging, Props}
+import akka.actor.FSM
+import akka.actor.{ActorLogging, Props}
+import org.soichiro.ircslackrelay.SlackClientActor._
 
 import scala.collection.immutable.Queue
 import scala.concurrent.duration._
 
 /**
- * An actor dealing with slack client
+ * An actor dealing with slack client as Finite State Machine(FSM)
  */
-class SlackClientActor(slackClient: SlackClient, apiInterval: FiniteDuration) extends Actor with ActorLogging {
+class SlackClientActor(slackClient: SlackClient, apiInterval: FiniteDuration)
+  extends FSM[State, Data] with ActorLogging {
 
   import org.soichiro.ircslackrelay.SlackClientActor._
   import context._
 
-  override def receive: Receive = idling()
+  startWith(Idling, Uninitialized)
 
-  private def idling(): Receive = {
-    case PostToSlack(message, channelName) =>
+  when(Idling) {
+    case Event(PostToSlack(message, channelName), Uninitialized) =>
       slackClient.postMessage(message, channelName, log)
-      context.become(running())
       scheduleAwake()
+      goto(Running) using PostQueue(Queue.empty)
   }
 
-  private def running(queue: Queue[PostToSlack] = Queue.empty): Receive = {
-    case post@PostToSlack(message, channelName) =>
-      context.become(running(queue.enqueue(post)))
-
-    case Awoke =>
-      queue.dequeueOption match {
+  when(Running) {
+    case Event(post: PostToSlack, pq: PostQueue) =>
+      stay using pq.copy(pq.queue.enqueue(post))
+    case Event(Awoke, pq: PostQueue) =>
+      pq.queue.dequeueOption match {
         case Some((PostToSlack(message, channelName), newQueue)) =>
           slackClient.postMessage(message, channelName, log)
-          context.become(running(newQueue))
           scheduleAwake()
+          stay using PostQueue(newQueue)
         case _ =>
-          context.become(idling())
+          goto(Idling) using Uninitialized
       }
   }
 
   private def scheduleAwake(): Unit = {
     system.scheduler.scheduleOnce(apiInterval, self, Awoke)
   }
+
+  initialize()
 }
 
 object SlackClientActor {
@@ -48,7 +52,21 @@ object SlackClientActor {
 
   def props = Props(new SlackClientActor(new SlackClientImpl, apiLimitWaitMilliSec))
 
-  case class PostToSlack(message:String, channelName:String)
+  sealed trait State
 
-  case object Awoke
+  case object Idling extends State
+
+  case object Running extends State
+
+  sealed trait Data
+
+  case object Uninitialized extends Data
+
+  case class PostQueue(queue: Queue[PostToSlack]) extends Data
+
+  sealed trait Message
+
+  case class PostToSlack(message:String, channelName:String) extends Message
+
+  case object Awoke extends Message
 }
