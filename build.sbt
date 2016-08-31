@@ -7,7 +7,7 @@ packageArchetype.java_application
 
 name := "ircslackrelay"
 
-version := "1.3.2"
+version := "1.3.3"
 
 scalaVersion := "2.11.2"
 
