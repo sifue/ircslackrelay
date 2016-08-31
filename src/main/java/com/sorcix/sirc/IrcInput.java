@@ -91,6 +91,7 @@ final class IrcInput extends Thread {
         try {
             parser = new IrcPacket(line, this.irc);
         } catch (Throwable e){
+            System.err.println("Ignore following Throwable:");
             e.printStackTrace();
             // !!!!!!FIX!!!!!! ignore if cannot parse
             return;
